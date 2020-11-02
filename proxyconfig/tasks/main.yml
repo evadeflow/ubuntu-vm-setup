@@ -1,4 +1,9 @@
 ---
+- name: Ensure remote system time matches host time
+  command: /bin/date --set "{{ lookup('pipe','date') }}"
+  when: molecule_inventory_file | length == 0  # Skip in docker/podman tests
+  changed_when: ansible_date_time.epoch != lookup('pipe', 'date +%s')
+
 - name: Copy CNTLM package to target
   copy:
     src: packages/cntlm_0.92.3-1ubuntu2_{{ host_arch }}.deb
@@ -46,11 +51,6 @@
     - "certs/RB-Proxy-TLS-CA.crt"
     - "certs/cmna-root-ca.crt"
   notify: "Update root CAs"
-
-- name: Ensure remote system time matches host time
-  command: /bin/date --set "{{ lookup('pipe','date') }}"
-  when: molecule_inventory_file | length == 0  # Skip in docker/podman tests
-  changed_when: ansible_date_time.epoch != lookup('pipe', 'date +%s')
 
 - name: Ensure apt is configured to use proxy
   copy:
