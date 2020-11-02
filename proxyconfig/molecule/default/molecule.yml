@@ -29,8 +29,6 @@ provisioner:
     defaults:
       callback_whitelist: profile_tasks, timer, yaml
       interpreter_python: auto_silent
-    ssh_connection:
-      pipelining: false
 
 verifier:
   name: ansible
