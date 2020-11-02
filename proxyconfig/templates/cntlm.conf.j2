@@ -1,0 +1,11 @@
+Username	{{ proxyconfig_user }}
+Domain		us
+PassNTLMv2  {{ proxyconfig_ntlm_hash }}    # Only for user '{{ proxyconfig_user }}', domain 'us'
+
+Proxy		10.224.200.25:8080
+Proxy		10.224.200.31:8080
+NoProxy		localhost, 127.0.0.*, 10.*, 192.168.*, *.cmna.test
+Listen		0.0.0.0:3128
+
+# Proxy WAR, see: https://github.com/ansible/ansible/issues/32750
+Header Connection: Keep-Alive

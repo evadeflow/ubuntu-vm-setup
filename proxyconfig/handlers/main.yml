@@ -1,2 +1,5 @@
 ---
-# handlers file for proxyconfig
+- name: Restart CNTLM
+  service:
+    name: cntlm
+    state: restarted

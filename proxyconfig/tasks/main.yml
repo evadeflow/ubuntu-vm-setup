@@ -1,2 +1,69 @@
 ---
-# tasks file for proxyconfig
+- name: Copy CNTLM package to target
+  copy:
+    src: packages/cntlm_0.92.3-1ubuntu2_{{ host_arch }}.deb
+    dest: /tmp/
+
+- name: Ensure cntlm is installed
+  package:
+    deb: "/tmp/cntlm_0.92.3-1ubuntu2_{{ host_arch }}.deb"
+
+- name: Inject hashed proxy password(s) into /etc/cntlm.conf
+  template:
+    src: cntlm.conf.j2
+    dest: /etc/cntlm.conf
+    owner: root
+    group: root
+    mode: 0600
+  notify: "Restart CNTLM"
+
+# This is needed to force CNTLM to restart before the ivs.packages role runs
+- meta: flush_handlers
+
+- name: Ensure proxy variables are set in /etc/environment
+  lineinfile:
+    path: /etc/environment
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - {line: "http_proxy=http://127.0.0.1:3128/"}
+    - {line: "https_proxy=http://127.0.0.1:3128/"}
+    - {line: "ftp_proxy=http://127.0.0.1:3128/"}
+
+- name: Install Bosch CA certificates
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/share/ca-certificates
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - "certs/Bosch-CA1-DE-1.crt"
+    - "certs/Bosch-CA1-DE-2.crt"
+    - "certs/Bosch-CA2-DE.crt"
+    - "certs/ProxyHTTP.crt"
+    - "certs/RB-Proxy-TLS-CA.crt"
+    - "certs/cmna-root-ca.crt"
+  register: copy_certs
+
+- name: Update root CAs
+  command: update-ca-certificates
+  when: copy_certs.changed
+
+- name: Ensure remote system time matches host time
+  command: /bin/date --set "{{ lookup('pipe','date') }}"
+  when: molecule_inventory_file | length == 0  # Skip in docker/podman tests
+  changed_when: ansible_date_time.epoch != lookup('pipe', 'date +%s')
+
+- name: Ensure apt is configured to use proxy
+  copy:
+    src: conf/proxy.conf
+    dest: /etc/apt/apt.conf.d/
+
+# curl is needed for testing this role
+# FIXME: There's probably a way to have the test install this instead(?)
+- name: Ensure curl is installed
+  package:
+    name: curl
+    state: present
+    update_cache: true
