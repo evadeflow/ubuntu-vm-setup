@@ -3,6 +3,7 @@
   copy:
     src: packages/cntlm_0.92.3-1ubuntu2_{{ host_arch }}.deb
     dest: /tmp/
+    mode: 0644
 
 - name: Ensure cntlm is installed
   package:
@@ -44,11 +45,7 @@
     - "certs/ProxyHTTP.crt"
     - "certs/RB-Proxy-TLS-CA.crt"
     - "certs/cmna-root-ca.crt"
-  register: copy_certs
-
-- name: Update root CAs
-  command: update-ca-certificates
-  when: copy_certs.changed
+  notify: "Update root CAs"
 
 - name: Ensure remote system time matches host time
   command: /bin/date --set "{{ lookup('pipe','date') }}"
@@ -59,11 +56,4 @@
   copy:
     src: conf/proxy.conf
     dest: /etc/apt/apt.conf.d/
-
-# curl is needed for testing this role
-# FIXME: There's probably a way to have the test install this instead(?)
-- name: Ensure curl is installed
-  package:
-    name: curl
-    state: present
-    update_cache: true
+    mode: 0644

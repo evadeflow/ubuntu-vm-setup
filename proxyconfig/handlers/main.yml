@@ -3,3 +3,6 @@
   service:
     name: cntlm
     state: restarted
+
+- name: Update root CAs
+  command: update-ca-certificates
