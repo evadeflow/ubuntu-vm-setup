@@ -15,16 +15,14 @@
 
   - name: Ensure google.com content type is text/html
     assert:
-      that:
-        - "'text/html' in this.content_type"
+      that: "'text/html' in this.content_type"
       fail_msg: "Content type retrieved from http://google.com is not 'text/html'!"
       success_msg: "Successfully retrieved http://google.com..."
       quiet: true
 
   - name: Ensure google.com contents are correct
     assert:
-      that:
-        - "expected_content in this.content"
+      that: "expected_content in this.content"
       fail_msg: "Failed to retrieve http://google.com"
       success_msg: "Successfully retrieved http://google.com"
       quiet: true

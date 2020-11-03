@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include proxyconfig"
+      include_role:
+        name: "proxyconfig"
+    - name: "Include gnomeconfig"
+      include_role:
+        name: "gnomeconfig"

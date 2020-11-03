@@ -1,0 +1,35 @@
+---
+- name: Ensure required packages are installed
+  package:
+    update_cache: true
+    name:
+      - dconf-cli
+      - python3-psutil
+      - unzip
+
+- name: Ensure user {{ machine_user }} exists
+  user:
+    name: "{{ machine_user }}"
+    shell: /bin/bash
+    groups: sudo
+    append: true
+    password: "$6$cih0/pzm8Clgt9$oto9bUrUBMWCIzer3Wq/g.Rb.yg.D42rA4mqA\
+      KElOvyj1gawbeqe0371f4EkEMRWgsls1P.TFFROsKFV.sNwq."
+
+- name: Ensure /home/{{ machine_user }}/.themes exits
+  file:
+    path: /home/{{ machine_user  }}/.themes
+    state: directory
+    mode: 0644
+
+- name: Ensure Solarized Dark theme is installed
+  unarchive:
+    src: Solarized-Dark-Cyan-3.36_2.0.3.zip
+    dest: "/home/{{ machine_user }}/.themes"
+    mode: 0644
+
+- name: Ensure Solarized Dark is the active theme
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/gtk-theme"
+    value: "'Solarized-Dark-Cyan-3.36'"
+    state: present

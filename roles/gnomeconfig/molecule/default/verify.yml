@@ -1,0 +1,17 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Read currently active GTK theme
+    community.general.dconf:
+      key: "/org/gnome/desktop/interface/gtk-theme"
+      state: read
+    register: gtk_theme
+
+  - name: Ensure Solarized Dark theme is active
+    assert:
+      that:  '"Solarized-Dark" in "{{ gtk_theme }}"'
+      fail_msg: "Could not verify whether Solarized Dark theme is active!"
+      success_msg: "{{ gtk_theme }} is currently active"
+      quiet: true
