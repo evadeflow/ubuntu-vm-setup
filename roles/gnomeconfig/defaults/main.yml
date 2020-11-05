@@ -1,2 +1,5 @@
 ---
 machine_user: evadeflow
+
+# This variable is used to determine whether we are being run via molecule
+this_is_a_test: "{{ lookup('env','MOLECULE_INVENTORY_FILE') }}"

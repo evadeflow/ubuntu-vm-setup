@@ -18,4 +18,5 @@ proxyconfig_ntlm_hash: !vault |
           39316139643062653762383937643039323937323133313564386334396134313332326432303539
           6334663634656165656534353865323337316432393638303034
 
-molecule_inventory_file: "{{ lookup('env','MOLECULE_INVENTORY_FILE') }}"
+# This variable is used to determine whether we are being run via molecule
+this_is_a_test: "{{ lookup('env','MOLECULE_INVENTORY_FILE') }}"
