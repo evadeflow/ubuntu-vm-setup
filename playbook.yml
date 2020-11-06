@@ -1,0 +1,12 @@
+---
+- name: "Configure Ubuntu 20.04"
+  hosts: localhost
+  connection: local
+  become: true
+  tasks:
+    - name: "Include proxyconfig"
+      include_role:
+        name: "proxyconfig"
+    - name: "Include gnomeconfig"
+      include_role:
+        name: "gnomeconfig"

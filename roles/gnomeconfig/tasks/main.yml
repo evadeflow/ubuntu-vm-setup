@@ -13,8 +13,8 @@
     shell: /bin/bash
     groups: sudo
     append: true
-    password: "$6$cih0/pzm8Clgt9$oto9bUrUBMWCIzer3Wq/g.Rb.yg.D42rA4mqA\
-      KElOvyj1gawbeqe0371f4EkEMRWgsls1P.TFFROsKFV.sNwq."
+    password: "$6$cAf5q8Bj7LbLg$FGJ.ipJipeCrtkKwXekOmdV9N9PyG0Ln14rMt0\
+      UM5oP1o9K4mQfOiplg8ncZT8ksUhnUgzQRtdK6mtv2F25Z00"
 
 - name: Ensure /home/{{ machine_user }}/.themes exists
   file:
@@ -22,7 +22,7 @@
     state: directory
     owner: "{{ machine_user }}"
     group: "{{ machine_user }}"
-    mode: 0644
+    mode: 0755
 
 - name: Ensure Solarized Dark theme is installed
   unarchive:
@@ -30,13 +30,14 @@
     dest: "/home/{{ machine_user }}/.themes"
     owner: "{{ machine_user }}"
     group: "{{ machine_user }}"
-    mode: 0644
+    mode: 0755
 
 - name: Ensure Solarized Dark is the active theme
   community.general.dconf:
     key: "/org/gnome/desktop/interface/gtk-theme"
     value: "'Solarized-Dark-Cyan-3.36'"
     state: present
+  become: false
 
 - name: Ensure /home/{{ machine_user }}/.local/share/fonts exists
   file:
@@ -44,7 +45,7 @@
     state: directory
     owner: "{{ machine_user }}"
     group: "{{ machine_user }}"
-    mode: 0644
+    mode: 0755
 
 # TODO: Figure out how to copy OTF file with spaces intact
 - name: Ensure Droid Sans Mono for Powerline font is installed
@@ -61,9 +62,11 @@
     key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-system-font"
     value: "false"
     state: present
+  become: false
 
 - name: Ensure that the active terminal font is Droid Sans Mono for Powerline
   community.general.dconf:
     key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font"
-    value: "'Droid-Sans-Mono-for-Powerline 18'"
+    value: "'Droid Sans Mono for Powerline 18'"
     state: present
+  become: false

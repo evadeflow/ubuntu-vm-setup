@@ -7,20 +7,20 @@
   vars:
     expected_content: "I'm Feeling Lucky"
   tasks:
-  - name: Ensure google.com is reachable
+  - name: Assert google.com is reachable
     uri:
       url: http://google.com
       return_content: yes
     register: this
 
-  - name: Ensure google.com content type is text/html
+  - name: Assert google.com content type is text/html
     assert:
       that: "'text/html' in this.content_type"
       fail_msg: "Content type retrieved from http://google.com is not 'text/html'!"
       success_msg: "Successfully retrieved http://google.com..."
       quiet: true
 
-  - name: Ensure google.com contents are correct
+  - name: Assert google.com contents are correct
     assert:
       that: "expected_content in this.content"
       fail_msg: "Failed to retrieve http://google.com"

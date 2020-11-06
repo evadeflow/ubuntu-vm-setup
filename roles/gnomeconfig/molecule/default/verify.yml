@@ -9,9 +9,22 @@
       state: read
     register: gtk_theme
 
-  - name: Ensure Solarized Dark theme is active
+  - name: Assert Solarized Dark theme is active
     assert:
       that:  '"Solarized-Dark" in "{{ gtk_theme }}"'
       fail_msg: "Could not verify whether Solarized Dark theme is active!"
       success_msg: "{{ gtk_theme }} is currently active"
+      quiet: true
+
+  - name: Read currently active gnome-terminal font
+    community.general.dconf:
+      key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font"
+      state: read
+    register: gnome_terminal_font
+
+  - name: Assert Droid Sans Mono for Powerline is the active font
+    assert:
+      that:  "{{ gnome_terminal_font == 'Droid Sans Mono for Powerline 18' }}"
+      fail_msg: "Could not verify whether Droid Sans Mono for Powerline is active!"
+      success_msg: "{{ gnome_terminal_font }} is currently active"
       quiet: true
