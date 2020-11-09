@@ -1,0 +1,4 @@
+ansible
+git+https://salsa.debian.org/apt-team/python-apt.git@2.1.5
+molecule
+psutil
