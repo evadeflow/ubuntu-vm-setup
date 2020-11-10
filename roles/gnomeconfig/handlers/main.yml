@@ -1,4 +1,4 @@
 ---
 - name: Update font cache
-  command: fc-cache -vf /home/{{ machine_user }}/.local/share/fonts
+  command: fc-cache -vf /home/{{ vm_user_home }}/.local/share/fonts
   when: this_is_a_test | length == 0  # Skip in docker/podman tests

@@ -7,29 +7,33 @@
       - python3-psutil
       - unzip
 
-- name: Ensure user {{ machine_user }} exists
+# Generally speaking, this playbook assumes that the target user already
+# exists. If this isn't the case (i.e., when testing using molecule/podman),
+# it will create it with password 'changeme'.
+- name: Create user {{ vm_user_name }}
   user:
-    name: "{{ machine_user }}"
+    name: "{{ vm_user_name }}"
     shell: /bin/bash
     groups: sudo
     append: true
     password: "$6$cAf5q8Bj7LbLg$FGJ.ipJipeCrtkKwXekOmdV9N9PyG0Ln14rMt0\
       UM5oP1o9K4mQfOiplg8ncZT8ksUhnUgzQRtdK6mtv2F25Z00"
+  when: this_is_a_test
 
-- name: Ensure /home/{{ machine_user }}/.themes exists
+- name: Ensure {{ vm_user_home }}/.themes directory exists
   file:
-    path: /home/{{ machine_user  }}/.themes
+    path: "{{ vm_user_home  }}/.themes"
     state: directory
-    owner: "{{ machine_user }}"
-    group: "{{ machine_user }}"
+    owner: "{{ vm_user_name }}"
+    group: "{{ vm_user_name }}"
     mode: 0755
 
 - name: Ensure Solarized Dark theme is installed
   unarchive:
     src: Solarized-Dark-Cyan-3.36_2.0.3.zip
-    dest: "/home/{{ machine_user }}/.themes"
-    owner: "{{ machine_user }}"
-    group: "{{ machine_user }}"
+    dest: "{{ vm_user_home }}/.themes"
+    owner: "{{ vm_user_name }}"
+    group: "{{ vm_user_name }}"
     mode: 0755
 
 - name: Ensure Solarized Dark is the active theme
@@ -39,21 +43,21 @@
     state: present
   become: false
 
-- name: Ensure /home/{{ machine_user }}/.local/share/fonts exists
+- name: Ensure {{ vm_user_home }}/.local/share/fonts directory exists
   file:
-    path: /home/{{ machine_user }}/.local/share/fonts
+    path: "{{ vm_user_home }}/.local/share/fonts"
     state: directory
-    owner: "{{ machine_user }}"
-    group: "{{ machine_user }}"
+    owner: "{{ vm_user_name }}"
+    group: "{{ vm_user_name }}"
     mode: 0755
 
 # TODO: Figure out how to copy OTF file with spaces intact
 - name: Ensure Droid Sans Mono for Powerline font is installed
   get_url:
     url: "https://github.com/powerline/fonts/raw/master/DroidSansMono/Droid%20Sans%20Mono%20for%20Powerline.otf"
-    dest: "/home/{{ machine_user }}/.local/share/fonts/Droid-Sans-Mono-for-Powerline.otf"
-    owner: "{{ machine_user }}"
-    group: "{{ machine_user }}"
+    dest: "{{ vm_user_home }}/.local/share/fonts/Droid-Sans-Mono-for-Powerline.otf"
+    owner: "{{ vm_user_name }}"
+    group: "{{ vm_user_name }}"
     mode: 0444
   notify: "Update font cache"
 
@@ -68,5 +72,26 @@
   community.general.dconf:
     key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font"
     value: "'Droid Sans Mono for Powerline 18'"
+    state: present
+  become: false
+
+- name: Ensure {{ vm_user_home }}/Pictures directory exists
+  file:
+    path: "{{ vm_user_home  }}/Pictures"
+    state: directory
+    owner: "{{ vm_user_name }}"
+    group: "{{ vm_user_name }}"
+    mode: 0755
+
+- name: Copy ropey.jpg to {{ vm_user_home }}/Pictures
+  copy:
+    src: ropey.jpg
+    dest: "{{ vm_user_home }}/Pictures"
+    mode: 0644
+
+- name: Ensure ropey.jpg is the active desktop background
+  community.general.dconf:
+    key: "/org/gnome/desktop/background/picture-uri"
+    value: "'file://{{ vm_user_home }}/Pictures/ropey.jpg'"
     state: present
   become: false

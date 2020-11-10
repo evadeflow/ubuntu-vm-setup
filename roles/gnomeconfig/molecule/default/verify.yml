@@ -2,6 +2,7 @@
 - name: Verify
   hosts: all
   gather_facts: false
+  become: false
   tasks:
   - name: Read currently active GTK theme
     community.general.dconf:
@@ -9,10 +10,10 @@
       state: read
     register: gtk_theme
 
-  - name: Assert Solarized Dark theme is active
+  - name: Verify Solarized Dark theme is active
     assert:
-      that:  '"Solarized-Dark" in "{{ gtk_theme }}"'
-      fail_msg: "Could not verify whether Solarized Dark theme is active!"
+      that:  "'Solarized-Dark-Cyan-3.36' in gtk_theme.value"
+      fail_msg: "Solarized Dark theme not active! gtk_theme.value = {{ gtk_theme.value }}"
       success_msg: "{{ gtk_theme }} is currently active"
       quiet: true
 
@@ -22,9 +23,22 @@
       state: read
     register: gnome_terminal_font
 
-  - name: Assert Droid Sans Mono for Powerline is the active font
+  - name: Verify Droid Sans Mono for Powerline is the active font
     assert:
-      that:  "{{ gnome_terminal_font == 'Droid Sans Mono for Powerline 18' }}"
-      fail_msg: "Could not verify whether Droid Sans Mono for Powerline is active!"
+      that:  "'Droid Sans Mono for Powerline 18' in gnome_terminal_font.value"
+      fail_msg: "''Droid Sans Mono for Powerline' font not active! gnome_terminal_font.value = {{ gnome_terminal_font.value }}"
       success_msg: "{{ gnome_terminal_font }} is currently active"
+      quiet: true
+
+  - name: Read currently active desktop background
+    community.general.dconf:
+      key: "/org/gnome/desktop/background/picture-uri"
+      state: read
+    register: gnome_desktop_background
+
+  - name: Verify ropey.jpg is the active desktop background
+    assert:
+      that:  "'ropey.jpg' in gnome_desktop_background.value"
+      fail_msg: "ropey.jpg background not active! gnome_desktop_background.value = {{ gnome_desktop_background.value }}"
+      success_msg: "{{ gnome_desktop_background }} is currently active"
       quiet: true
