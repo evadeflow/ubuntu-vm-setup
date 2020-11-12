@@ -4,6 +4,7 @@
     update_cache: true
     name:
       - dconf-cli
+      - gnome-shell-extensions
       - python3-psutil
       - unzip
 
@@ -35,6 +36,13 @@
     owner: "{{ vm_user_name }}"
     group: "{{ vm_user_name }}"
     mode: 0755
+
+- name: Ensure Dock is set to auto-hide
+  community.general.dconf:
+    key: "/org/gnome/shell/extensions/dash-to-dock/dock-fixed"
+    value: "false"
+    state: present
+  become: false
 
 - name: Ensure Solarized Dark is the active theme
   community.general.dconf:

@@ -4,6 +4,19 @@
   gather_facts: false
   become: false
   tasks:
+  - name: Read Dock auto-hide setting
+    community.general.dconf:
+      key: "/org/gnome/shell/extensions/dash-to-dock/dock-fixed"
+      state: read
+    register: dock_fixed
+
+  - name: Verify that the dock is set to auto-hide
+    assert:
+      that:  'dock_fixed == "falseXXX"'
+      fail_msg: "Dock not set to autohide (dock-fixed = {{ dock_fixed }})"
+      success_msg: "Dock is currently to auto-hide"
+      quiet: true
+
   - name: Read currently active GTK theme
     community.general.dconf:
       key: "/org/gnome/desktop/interface/gtk-theme"
