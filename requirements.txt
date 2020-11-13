@@ -1,5 +1,4 @@
 ansible
 git+https://salsa.debian.org/apt-team/python-apt.git@2.1.5
-molecule>=3.2.0a0
-molecule[podman,lint]
+molecule[lint,podman]
 psutil
