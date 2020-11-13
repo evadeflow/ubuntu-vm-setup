@@ -5,7 +5,7 @@
   become: false
 
   vars:
-    expected_dock_settings:
+    expected_dash_to_dock_settings:
      - key: "autohide"
        value: "false"
 
@@ -20,7 +20,7 @@
     community.general.dconf:
       key: "/org/gnome/shell/extensions/dash-to-dock/{{ item.key }}"
       state: read
-    with_items: "{{ expected_dock_settings }}"
+    with_items: "{{ expected_dash_to_dock_settings }}"
     register: "actual_dock_settings"
 
   - name: Verify that the Dock is hidden
