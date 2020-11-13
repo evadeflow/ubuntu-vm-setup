@@ -12,7 +12,7 @@
 
   - name: Verify that the dock is set to auto-hide
     assert:
-      that:  'dock_fixed == "falseXXX"'
+      that:  'dock_fixed.value == "false"'
       fail_msg: "Dock not set to autohide (dock-fixed = {{ dock_fixed }})"
       success_msg: "Dock is currently to auto-hide"
       quiet: true
