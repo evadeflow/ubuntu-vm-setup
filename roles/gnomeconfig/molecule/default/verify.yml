@@ -5,26 +5,30 @@
   become: false
 
   vars:
-    dock_vars:
-     - autohide
-     - dash-to-dock
-     - intellihide
+    expected_dock_settings:
+     - key: "autohide"
+       value: "false"
+
+     - key: "dash-to-dock"
+       value: "false"
+
+     - key: "intellihide"
+       value: "false"
 
   tasks:
   - name: Read Dock settings
     community.general.dconf:
-      key: "/org/gnome/shell/extensions/dash-to-dock/dash-to-dock"
+      key: "/org/gnome/shell/extensions/dash-to-dock/{{ item.key }}"
       state: read
-    register: "dock_settings"
-    with_items: "{{ dock_vars }}"
+    with_items: "{{ expected_dock_settings }}"
+    register: "actual_dock_settings"
 
-  - name: Verify that the Dock is set to auto-hide
+  - name: Verify that the Dock is hidden
     assert:
-      that:  'item.value == "false"'
-      fail_msg: "Dock auto-hide settings incorrect! (item = {{ item }})"
-      success_msg: "Dock is currently set to auto-hide"
-      quiet: true
-    with_items: "{{ dock_settings.results }}"
+      that:  "item.value == item.item.value"
+      fail_msg: "Failed!"
+      success_msg: "Succeeded: {{ item }}"
+    with_items: "{{ actual_dock_settings.results }}"
 
   - name: Read currently active GTK theme
     community.general.dconf:
