@@ -38,7 +38,7 @@
 
   - name: Verify Droid Sans Mono for Powerline is the active font
     assert:
-      that:  "'Droid Sans Mono for Powerline 18' in gnome_terminal_font.value"
+      that:  "'Droid Sans Mono for Powerline 16' in gnome_terminal_font.value"
       fail_msg: "''Droid Sans Mono for Powerline' font not active! gnome_terminal_font.value = {{ gnome_terminal_font.value }}"
       success_msg: "{{ gnome_terminal_font }} is currently active"
       quiet: true

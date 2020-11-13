@@ -79,7 +79,7 @@
 - name: Ensure that the active terminal font is Droid Sans Mono for Powerline
   community.general.dconf:
     key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font"
-    value: "'Droid Sans Mono for Powerline 18'"
+    value: "'Droid Sans Mono for Powerline 16'"
     state: present
   become: false
 
