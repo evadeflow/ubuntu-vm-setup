@@ -39,9 +39,13 @@
 
 - name: Ensure Dock is set to auto-hide
   community.general.dconf:
-    key: "/org/gnome/shell/extensions/dash-to-dock/dock-fixed"
+    key: "{{ item }}"
     value: "false"
     state: present
+  with_items:
+    - "/org/gnome/shell/extensions/dash-to-dock/autohide"
+    - "/org/gnome/shell/extensions/dash-to-dock/dash-to-dock"
+    - "/org/gnome/shell/extensions/dash-to-dock/intellihide"
   become: false
 
 - name: Ensure Solarized Dark is the active theme
