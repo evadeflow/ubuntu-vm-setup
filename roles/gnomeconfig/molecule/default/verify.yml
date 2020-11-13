@@ -25,9 +25,10 @@
 
   - name: Verify that the Dock is hidden
     assert:
-      that:  "item.value == item.item.value"
-      fail_msg: "Failed!"
-      success_msg: "Succeeded: {{ item }}"
+      that:  "item.item.value == item.value"
+      fail_msg: "Expected {{ item.item.key }} to be {{ item.item.value }}, but it is {{ item.value }} instead..."
+      success_msg: "{{ item.item.key }} == {{ item.item.value }}"
+      quiet: true
     with_items: "{{ actual_dock_settings.results }}"
 
   - name: Read currently active GTK theme
