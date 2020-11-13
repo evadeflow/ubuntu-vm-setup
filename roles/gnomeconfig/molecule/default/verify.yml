@@ -3,19 +3,28 @@
   hosts: all
   gather_facts: false
   become: false
+
+  vars:
+    dock_vars:
+     - autohide
+     - dash-to-dock
+     - intellihide
+
   tasks:
-  - name: Read Dock auto-hide setting
+  - name: Read Dock settings
     community.general.dconf:
       key: "/org/gnome/shell/extensions/dash-to-dock/dash-to-dock"
       state: read
-    register: dock_fixed
+    register: "dock_settings"
+    with_items: "{{ dock_vars }}"
 
-  - name: Verify that the dock is set to auto-hide
+  - name: Verify that the Dock is set to auto-hide
     assert:
-      that:  'dock_fixed.value == "false"'
-      fail_msg: "Dock not set to autohide (dock-fixed = {{ dock_fixed }})"
+      that:  'item.value == "false"'
+      fail_msg: "Dock auto-hide settings incorrect! (item = {{ item }})"
       success_msg: "Dock is currently set to auto-hide"
       quiet: true
+    with_items: "{{ dock_settings.results }}"
 
   - name: Read currently active GTK theme
     community.general.dconf:
