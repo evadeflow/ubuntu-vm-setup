@@ -18,16 +18,18 @@
   tasks:
   - name: Read Dock settings
     community.general.dconf:
-      key: "/org/gnome/shell/extensions/dash-to-dock/{{ item.key }}"
+      key: "/org/gnome/shell/extensions/dash-to-dock/{{ expected.key }}"
       state: read
     loop: "{{ expected_dash_to_dock_settings|flatten(levels=1) }}"
+    loop_control:
+      loop_var: expected
     register: "actual_dock_settings"
 
   - name: Verify that the Dock is hidden
     assert:
-      that:  "item.item.value == item.value"
-      fail_msg: "Expected {{ item.item.key }} to be {{ item.item.value }}, but it is {{ item.value }} instead..."
-      success_msg: "{{ item.item.key }} == {{ item.item.value }}"
+      that:  "item.expected.value == item.value"
+      fail_msg: "Expected expected item.expected.key to be {{ item.expected.value }}, but it is {{ item.value }} instead..."
+      success_msg: "{{ item.expected.key }} == {{ item.expected.value }}"
       quiet: true
     loop: "{{ actual_dock_settings.results | flatten(levels=1) }}"
 
