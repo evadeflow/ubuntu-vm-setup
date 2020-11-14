@@ -42,7 +42,7 @@
     key: "{{ item }}"
     value: "false"
     state: present
-  with_items:
+  loop:
     - "/org/gnome/shell/extensions/dash-to-dock/autohide"
     - "/org/gnome/shell/extensions/dash-to-dock/dash-to-dock"
     - "/org/gnome/shell/extensions/dash-to-dock/intellihide"

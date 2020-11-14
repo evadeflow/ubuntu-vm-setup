@@ -31,7 +31,7 @@
     path: /etc/environment
     line: "{{ item.line }}"
     state: present
-  with_items:
+  loop:
     - {line: "http_proxy=http://127.0.0.1:3128/"}
     - {line: "https_proxy=http://127.0.0.1:3128/"}
     - {line: "ftp_proxy=http://127.0.0.1:3128/"}
@@ -43,7 +43,7 @@
     owner: root
     group: root
     mode: 0644
-  with_items:
+  loop:
     - "certs/Bosch-CA1-DE-1.crt"
     - "certs/Bosch-CA1-DE-2.crt"
     - "certs/Bosch-CA2-DE.crt"
