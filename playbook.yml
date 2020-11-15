@@ -7,6 +7,15 @@
     - name: "Include proxyconfig"
       include_role:
         name: "proxyconfig"
+
     - name: "Include gnomeconfig"
       include_role:
         name: "gnomeconfig"
+
+    - name: "Include packagedeps"
+      include_role:
+        name: "packagedeps"
+
+    - name: "Include dotfiles"
+      include_role:
+        name: "dotfiles"
