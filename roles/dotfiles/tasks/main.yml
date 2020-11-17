@@ -1,2 +1,49 @@
 ---
-# tasks file for dotfiles
+- name: Ensure required packages are installed
+  package:
+    update_cache: true
+    name:
+      - git
+      - myrepos
+      - tmux
+      - vcsh
+      - vim
+      - zsh
+
+- name: Ensure Git credential.helper is set to 'cache'
+  blockinfile:
+    path: /etc/gitconfig
+    create: true
+    mode: 0644
+    block: |
+      [credential]
+          helper = cache --timeout=900
+
+# Generally speaking, this playbook assumes that the target user already
+# exists. If this isn't the case (i.e., when testing using molecule/podman),
+# it will create it with password 'changeme'.
+- name: Create user {{ vm_user_name }}
+  user:
+    name: "{{ vm_user_name }}"
+    shell: /usr/bin/zsh
+    groups: sudo
+    append: true
+    password: "$6$cAf5q8Bj7LbLg$FGJ.ipJipeCrtkKwXekOmdV9N9PyG0Ln14rMt0\
+      UM5oP1o9K4mQfOiplg8ncZT8ksUhnUgzQRtdK6mtv2F25Z00"
+  when: this_is_a_test
+
+- name: Ensure mrconfig has been cloned to {{ vm_user_home }}
+  command:
+    chdir: "{{ vm_user_home }}"
+    cmd: /usr/bin/vcsh clone "https://evadeflow:{{ github_api_key }}@github.com/evadeflow/mrconfig.git"
+    creates: "{{ vm_user_home }}/.mrconfig"
+  become: true
+  become_user: "{{ vm_user_name }}"
+
+- name: Ensure mrconfig contents have been extracted to {{ vm_user_home }}
+  command:
+    chdir: "{{ vm_user_home }}"
+    cmd: /usr/bin/mr up
+    creates: "{{ vm_user_home }}/.tmux.conf"
+  become: true
+  become_user: "{{ vm_user_name }}"

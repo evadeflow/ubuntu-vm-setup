@@ -12,10 +12,6 @@
       include_role:
         name: "gnomeconfig"
 
-    - name: "Include packagedeps"
-      include_role:
-        name: "packagedeps"
-
     - name: "Include dotfiles"
       include_role:
         name: "dotfiles"

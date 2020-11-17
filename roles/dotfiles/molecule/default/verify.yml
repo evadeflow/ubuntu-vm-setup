@@ -1,10 +1,18 @@
 ---
-# This is an example playbook to execute Ansible tests.
-
+# FIXME - TODO: Figure out how to get the value of `vm_user_name` passed into
+# the converged playbook here instead of matching directly against
+# `evadeflow`. (Is this even possible? Some kind of dump/read needed?)
 - name: Verify
   hosts: all
   gather_facts: false
   tasks:
-  - name: Example assertion
+  - name: Obtain shell for user evadeflow
+    shell:
+      cmd: grep "^evadeflow" "/etc/passwd" | cut "-d:" "-f7"
+    register: vm_user_shell
+
+  - name: Verify that the shell for evadeflow is /usr/bin/zsh
     assert:
-      that: true
+      that: "{{ vm_user_shell.stdout_lines[0] == '/usr/bin/zsh' }}"
+      fail_msg: "Expected shell for evadeflow to be /usr/bin/zsh, but it is {{ vm_user_shell.stdout_lines[0] }} instead..."
+      success_msg: "evadeflow's shell is /usr/bin/zsh"
