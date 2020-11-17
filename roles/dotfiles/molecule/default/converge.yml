@@ -9,6 +9,3 @@
     - name: "Include dotfiles"
       include_role:
         name: "dotfiles"
-      vars:
-        vm_user_name: "cornelius"
-        vm_user_home: "/home/cornelius"

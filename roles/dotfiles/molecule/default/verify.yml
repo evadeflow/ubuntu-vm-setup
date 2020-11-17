@@ -8,6 +8,9 @@
   hosts: all
   gather_facts: false
   tasks:
+  - debug:
+      msg: ">>>>>>>>>> vm_user_name = {{ vm_user_name }}"
+
   - name: Obtain shell for user evadeflow
     shell:
       cmd: grep "^evadeflow" "/etc/passwd" | cut "-d:" "-f7"
