@@ -1,7 +1,9 @@
 ---
-# FIXME - TODO: Figure out how to get the value of `vm_user_name` passed into
-# the converged playbook here instead of matching directly against
-# `evadeflow`. (Is this even possible? Some kind of dump/read needed?)
+# FIXME - TODO: Figure out how to get the value of `vm_user_name` and
+# `vm_user_home` passed into the converged playbook here instead of matching
+# directly against `evadeflow` and `/home/evadeflow`. (This page explains how
+# to do it by creating a vars file for the test playbook, but I'm not clear on
+# where to put it.)
 - name: Verify
   hosts: all
   gather_facts: false
@@ -16,3 +18,17 @@
       that: "{{ vm_user_shell.stdout_lines[0] == '/usr/bin/zsh' }}"
       fail_msg: "Expected shell for evadeflow to be /usr/bin/zsh, but it is {{ vm_user_shell.stdout_lines[0] }} instead..."
       success_msg: "evadeflow's shell is /usr/bin/zsh"
+
+  # TODO: Consider add `loop:` here and verifying a few more items (try to do
+  # at least one file from each config)
+  - name: Retrieve status of /home/evadeflow/.tmux.conf
+    stat:
+      path: "/home/evadeflow/.tmux.conf"
+    register: tmuxconfig
+
+  - name: Verify that .tmux.config was created correctly
+    assert:
+      that:
+        - "tmuxconfig.stat.exists"
+        - "not tmuxconfig.stat.isdir"
+        - "tmuxconfig.stat.mode == '0755'"
