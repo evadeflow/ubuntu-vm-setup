@@ -34,7 +34,6 @@
   loop:
     - {line: "http_proxy=http://127.0.0.1:3128/"}
     - {line: "https_proxy=http://127.0.0.1:3128/"}
-    - {line: "ftp_proxy=http://127.0.0.1:3128/"}
 
 - name: Install Bosch CA certificates
   copy:
