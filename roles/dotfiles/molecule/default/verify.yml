@@ -1,37 +1,33 @@
 ---
-# FIXME - TODO: Figure out how to get the value of `vm_user_name` and
-# `vm_user_home` passed into the converged playbook here instead of matching
-# directly against `evadeflow` and `/home/evadeflow`. (This page explains how
-# to do it by creating a vars file for the test playbook, but I'm not clear on
-# where to put it.)
 - name: Verify
   hosts: all
   gather_facts: false
   tasks:
-  - debug:
-      msg: ">>>>>>>>>> vm_user_name = {{ vm_user_name }}"
-
-  - name: Obtain shell for user evadeflow
+  - name: "Obtain shell for user {{ vm_user_name }}"
     shell:
-      cmd: grep "^evadeflow" "/etc/passwd" | cut "-d:" "-f7"
+      cmd: grep "^{{ vm_user_name }}" "/etc/passwd" | cut "-d:" "-f7"
     register: vm_user_shell
 
-  - name: Verify that the shell for evadeflow is /usr/bin/zsh
+  - name: "Verify that the shell for {{ vm_user_name }} is /usr/bin/zsh"
     assert:
       that: "{{ vm_user_shell.stdout_lines[0] == '/usr/bin/zsh' }}"
-      fail_msg: "Expected shell for evadeflow to be /usr/bin/zsh, but it is {{ vm_user_shell.stdout_lines[0] }} instead..."
-      success_msg: "evadeflow's shell is /usr/bin/zsh"
+      fail_msg: "Expected shell for user {{ vm_user_name }} to be /usr/bin/zsh, but it is {{ vm_user_shell.stdout_lines[0] }} instead..."
+      success_msg: "{{ vm_user_name }}'s shell is /usr/bin/zsh"
+      quiet: true
 
   # TODO: Consider add `loop:` here and verifying a few more items (try to do
   # at least one file from each config)
-  - name: Retrieve status of /home/evadeflow/.tmux.conf
+  - name: "Retrieve status of {{ vm_user_home }}.tmux.conf"
     stat:
-      path: "/home/evadeflow/.tmux.conf"
+      path: "{{ vm_user_home }}/.tmux.conf"
     register: tmuxconfig
 
-  - name: Verify that .tmux.config was created correctly
+  - name: "Verify that {{ vm_user_home }}/.tmux.config was created correctly"
     assert:
       that:
         - "tmuxconfig.stat.exists"
         - "not tmuxconfig.stat.isdir"
         - "tmuxconfig.stat.mode == '0755'"
+      fail_msg: "{{ vm_user_home }}/.tmux.conf either does not exist, is not a file or has incorrect permissions"
+      success_msg: "{{ vm_user_home }}/.tmux.conf exists and has correct permissions"
+      quiet: true
