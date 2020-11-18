@@ -4,6 +4,32 @@
   gather_facts: false
   vars_files: "../../defaults/main.yml"
   tasks:
+  - name: Get installation status of packages the playbook was supposed to install
+    package:
+      name: "{{ name }}"
+      state: present
+    check_mode: true
+    loop:
+        - git
+        - myrepos
+        - tmux
+        - vcsh
+        - vim
+        - zsh
+    loop_control:
+      loop_var: name
+    register: pkgstatus
+
+  - name: "Verify that required packages were installed"
+    assert:
+      that: "not {{ item.changed }}"
+      fail_msg: "Package {{ item.name }} is not installed!"
+      success_msg: "Package {{ item.name }} is installed"
+      quiet: true
+    loop: "{{ pkgstatus.results }}"
+    loop_control:
+      label: "{{ item.name }}"
+
   - name: "Obtain shell for user {{ vm_user_name }}"
     shell:
       cmd: grep "^{{ vm_user_name }}" "/etc/passwd" | cut "-d:" "-f7"
@@ -34,4 +60,7 @@
         - "{{ item.stat.isreg }}"
       fail_msg: "{{ item.stat.path }} either does not exist or is not a regular file"
       success_msg: "{{ item.stat.path }} exists and is a regular file"
+      quiet: true
     loop: "{{ configfiles.results }}"
+    loop_control:
+      label: "{{ item.stat.path }}"

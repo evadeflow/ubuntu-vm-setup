@@ -23,6 +23,7 @@
     loop: "{{ expected_dash_to_dock_settings|flatten(levels=1) }}"
     loop_control:
       loop_var: expected
+      label: "/org/gnome/shell/extensions/dash-to-dock/{{ expected.key }}"
     register: "actual_dock_settings"
 
   - name: Verify that the Dock is hidden
@@ -32,6 +33,8 @@
       success_msg: "{{ item.expected.key }} == {{ item.expected.value }}"
       quiet: true
     loop: "{{ actual_dock_settings.results | flatten(levels=1) }}"
+    loop_control:
+      label: "{{ item.expected.key }} == {{ item.expected.value }}"
 
   - name: Read currently active GTK theme
     community.general.dconf:
