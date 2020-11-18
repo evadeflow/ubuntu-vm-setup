@@ -18,9 +18,6 @@
     shell: /usr/bin/zsh
     groups: sudo
     append: true
-    password: "$6$cAf5q8Bj7LbLg$FGJ.ipJipeCrtkKwXekOmdV9N9PyG0Ln14rMt0\
-      UM5oP1o9K4mQfOiplg8ncZT8ksUhnUgzQRtdK6mtv2F25Z00"
-  when: this_is_a_test
 
 - name: Ensure {{ vm_user_home }}/.themes directory exists
   file:
