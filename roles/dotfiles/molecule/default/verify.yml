@@ -16,19 +16,22 @@
       success_msg: "{{ vm_user_name }}'s shell is /usr/bin/zsh"
       quiet: true
 
-  # TODO: Consider add `loop:` here and verifying a few more items (try to do
-  # at least one file from each config)
-  - name: "Retrieve status of {{ vm_user_home }}.tmux.conf"
+  - name: "Retrieve status of playbook-created dotfiles"
     stat:
-      path: "{{ vm_user_home }}/.tmux.conf"
-    register: tmuxconfig
+      path: "{{ item }}"
+    register: configfiles
+    loop:
+      - "{{ vm_user_home }}/.gitconfig"
+      - "{{ vm_user_home }}/.mrconfig"
+      - "{{ vm_user_home }}/.tmux.conf"
+      - "{{ vm_user_home }}/.vimrc"
+      - "{{ vm_user_home }}/.zshrc"
 
-  - name: "Verify that {{ vm_user_home }}/.tmux.config was created correctly"
+  - name: "Verify that dotfiles were created correctly"
     assert:
       that:
-        - "tmuxconfig.stat.exists"
-        - "not tmuxconfig.stat.isdir"
-        - "tmuxconfig.stat.mode == '0755'"
-      fail_msg: "{{ vm_user_home }}/.tmux.conf either does not exist, is not a file or has incorrect permissions"
-      success_msg: "{{ vm_user_home }}/.tmux.conf exists and has correct permissions"
-      quiet: true
+        - "{{ item.stat.exists }}"
+        - "{{ item.stat.isreg }}"
+      fail_msg: "{{ item.stat.path }} either does not exist or is not a regular file"
+      success_msg: "{{ item.stat.path }} exists and is a regular file"
+    loop: "{{ configfiles.results }}"
