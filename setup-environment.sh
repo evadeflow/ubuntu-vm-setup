@@ -25,8 +25,8 @@ printf '%s ' 'Enter proxy password:'
 read -s proxypass
 echo
 
-export http_proxy='http://${proxuser}:${proxypass}@10.224.200.25:8080/'
-export https_proxy='http://${proxuser}:${proxypass}@10.224.200.25:8080/'
+export http_proxy="http://${proxyuser}:${proxypass}@10.224.200.25:8080/"
+export https_proxy="http://${proxyuser}:${proxypass}@10.224.200.25:8080/"
 sudo -E apt update
 sudo -E apt upgrade -y
 sudo -E apt install -y build-essential git libapt-pkg-dev python3-dev python3-venv
