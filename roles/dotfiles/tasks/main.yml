@@ -47,3 +47,10 @@
     creates: "{{ vm_user_home }}/.tmux.conf"
   become: true
   become_user: "{{ vm_user_name }}"
+
+- name: Ensure tmux config has been activated
+  script: "activate-tmux-config.sh"
+  args:
+    creates: "{{ vm_user_home }}/.tmux/plugins/maglev/maglev.tmux"
+  become: true
+  become_user: "{{ vm_user_name }}"
