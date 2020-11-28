@@ -53,6 +53,13 @@
     state: present
   become: false
 
+- name: Ensure Desktop icons are disabled
+  community.general.dconf:
+    key: "/org/gnome/shell/disabled-extensions"
+    value: "['desktop-icons@csoriano']"
+    state: present
+  become: false
+
 - name: Ensure {{ vm_user_home }}/.local/share/fonts directory exists
   file:
     path: "{{ vm_user_home }}/.local/share/fonts"
