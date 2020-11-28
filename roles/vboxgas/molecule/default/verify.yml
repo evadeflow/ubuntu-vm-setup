@@ -1,0 +1,12 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  vars_files: "../../defaults/main.yml"
+  tasks:
+  - name: "Verify that 0 == 1"
+    assert:
+      that: "0 == 1"
+      fail_msg: "0 does not equal 1!"
+      success_msg: "Congrats, you broke Math (0 now equals 1)"
+      quiet: true

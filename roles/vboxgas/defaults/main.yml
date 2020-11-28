@@ -1,0 +1,6 @@
+---
+vm_user_name: "{{ lookup('env','USER') }}"
+vm_user_home: "{{ lookup('env','HOME') }}"
+
+# This variable is used to determine whether we are being run via molecule
+this_is_a_test: "{{ lookup('env','MOLECULE_INVENTORY_FILE') }}"

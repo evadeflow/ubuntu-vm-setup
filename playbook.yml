@@ -4,6 +4,10 @@
   connection: local
   become: true
   tasks:
+    - name: "Include vboxgas"
+      include_role:
+        name: "vboxgas"
+
     - name: "Include proxyconfig"
       include_role:
         name: "proxyconfig"

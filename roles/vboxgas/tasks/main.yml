@@ -1,0 +1,15 @@
+---
+- name: Check whether the VirtualBox Guest Additions installer is available
+  find:
+    paths: "/media/{{ vm_user_name }}"
+    patterns: "VBoxLinuxAdditions.run"
+    recurse: true
+  register: vbox_gas_installer
+
+- name: Install VirtualBox Guest Additions (if not already installed)
+  shell: "{{ item.path }} --nox11 -- --force"
+  args:
+    creates: "/usr/sbin/VBoxService"
+  with_items: "{{ vbox_gas_installer.files }}"
+  ignore_errors: true
+  become: true
