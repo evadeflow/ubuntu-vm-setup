@@ -46,17 +46,20 @@
     - "/org/gnome/shell/extensions/dash-to-dock/intellihide"
   become: false
 
+- name: Ensure Home folder and Trash desktop icons are disabled
+  community.general.dconf:
+    key: "{{ item }}"
+    value: "false"
+    state: present
+  loop:
+    - "/org/gnome/shell/extensions/desktop-icons/show-home"
+    - "/org/gnome/shell/extensions/desktop-icons/show-trash"
+  become: false
+
 - name: Ensure Solarized Dark is the active theme
   community.general.dconf:
     key: "/org/gnome/desktop/interface/gtk-theme"
     value: "'Solarized-Dark-Cyan-3.36'"
-    state: present
-  become: false
-
-- name: Ensure Desktop icons are disabled
-  community.general.dconf:
-    key: "/org/gnome/shell/disabled-extensions"
-    value: "['desktop-icons@csoriano']"
     state: present
   become: false
 
