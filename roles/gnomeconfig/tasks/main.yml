@@ -6,6 +6,7 @@
       - dconf-cli
       - gnome-shell-extensions
       - python3-psutil
+      - ubuntu-desktop-minimal
       - unzip
       - zsh
 
