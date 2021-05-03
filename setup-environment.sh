@@ -39,4 +39,4 @@ pip install -U pip setuptools wheel
 pip install -r requirements.txt
 echo "Setup complete! You may now run:"
 echo
-echo "$ ansible-playbook --ask-become-pass --ask-vault-pass playbook.yml"
+echo "$ ansible-playbook --ask-become-pass --ask-vault-pass local.yml"
